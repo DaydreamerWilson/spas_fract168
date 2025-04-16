@@ -9,12 +9,17 @@ Current available native features included
 This data structure features lossless arithmetic operations within range of (x>2^-64) (~1e19)
 Retaining high precision representation of floating point within range of (2^-64 > x > 2^(2^64))
 
--spas_fract168_t{
--  unsigned char sign; // MSB for big, LSB for small, 0 means positive, 1 means negative
--  uint64_t big; // Contain a fraction series equivalent to its integer value / 2^64
--  uint64_t small; // Contain a fraction series equivalent to its integer value / 2^(128+offset)
--  uint32_t offset; // Exponential denominator of small
--}
+spas_fract168_t{
+
+  unsigned char sign; // MSB for big, LSB for small, 0 means positive, 1 means negative
+  
+  uint64_t big; // Contain a fraction series equivalent to its integer value / 2^64
+  
+  uint64_t small; // Contain a fraction series equivalent to its integer value / 2^(128+offset)
+  
+  uint32_t offset; // Exponential denominator of small
+  
+}
 
 Allow high precision arithmetic operations with number smaller than 2^-64 while maintaining constant memory footprint.
 
