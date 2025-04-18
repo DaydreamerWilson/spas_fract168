@@ -9,7 +9,7 @@ Current available native features included
 - Constructing fraction from double (x>2^-64)
 
 This data structure features lossless arithmetic operations within range of (x>2^-64) (~1e19)
-Retaining high precision representation of floating point within range of (2^-64 > x > 2^(2^64))
+Retaining high precision representation of floating point within range of (2^-64 > x > 2^(-(2^64)))
 
     spas_fract168_t{
 
