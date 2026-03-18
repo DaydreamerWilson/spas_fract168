@@ -10,7 +10,7 @@ double spas_fract168_t::getDouble() const{
     uint64_t tb = this->big;
     double x = 0;
     for(int i=0; i<64; i++){
-        x = x/2.0f;
+        x = x/2.0;
         if(tb&temp){
             x += 0.5;
         }
@@ -59,12 +59,12 @@ spas_fract168_t::spas_fract168_t(double t){
         this->sign = 0b0000;
     }
     for(int i=0; i<64; i++){
-        if(t-0.5f>=0){
+        if(t-0.5>=0){
             this->big = this->big|temp;
-            t = t-0.5f;
+            t = t-0.5;
         }
         temp = temp >> 1;
-        t = t*2.0f;
+        t = t*2.0;
     }
 }
 
@@ -211,22 +211,8 @@ spas_fract168_t& spas_fract168_t::operator*=(const spas_fract168_t& rhs){
     uint32_t so = 0;
     fraction_multiply(this->small, rhs.small, sb, ss);
 
-    unsigned long sb_index = __builtin_clzll(sb);
-    unsigned long ss_index = __builtin_clzll(ss);
-
-    if(sb==0){
-        sb_index = 64;
-    }
-    if(ss==0){
-        ss_index = 64;
-    }
-
-    if((this->sign&0b0001) == (rhs.sign&0b0001)){
-        s_sign = 0b0000;
-    }
-    else{
-        s_sign = 0b0001;
-    }
+    unsigned long sb_index = (sb == 0) ? 64 : __builtin_clzll(sb);
+    unsigned long ss_index = (ss == 0) ? 64 : __builtin_clzll(ss);
 
     if(sb){
         if(sb_index != 0){
@@ -274,15 +260,8 @@ spas_fract168_t& spas_fract168_t::operator*=(const spas_fract168_t& rhs){
         if(this->big){
             r_sign = (((this->sign>>3)&0b0001)!=(rhs.sign&0b0001));
             fraction_multiply(this->big, rhs.small, r_small, ns);
-            unsigned long big_index = __builtin_clzll(r_small);
-            unsigned long small_index = __builtin_clzll(ns);
-
-            if(big_index<0){
-                big_index = 64;
-            }
-            if(small_index<0){
-                small_index = 64;
-            }
+            unsigned long big_index = (big_index ==  0) ? 64 : __builtin_clzll(r_small);
+            unsigned long small_index = (small_index == 0) ? 64 : __builtin_clzll(ns);
 
             if(r_small){
                 if(big_index != 0){
@@ -480,7 +459,7 @@ uint8_t full_fraction_addition(unsigned char &sign, uint64_t &res, uint32_t &res
             res_off = l_off;
             uint8_t carry = fraction_addition(res, rhs, off);
             if(carry && res_off > 0){
-                res = res << 1;
+                res = (res >> 1) | 0x8000'0000'0000'0000;
                 res_off -= 1;
                 carry = 0;
             }
