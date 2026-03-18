@@ -12,7 +12,7 @@ This data structure features lossless arithmetic operations within range of (x>2
 
     spas_fract168_t{
 
-      unsigned char sign; // MSB for big, LSB for small, 0 means positive, 1 means negative
+      unsigned char sign; // 0b1000 for big, 0b0001 for small, 0 for positive and 1 for negative
   
       uint64_t big; // Contain a fraction series equivalent to its integer value / 2^64
   
