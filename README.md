@@ -8,8 +8,8 @@ Current available native features included
 - Arithmetic operations including addition, subtraction and multiplication
 - Constructing fraction from double (x>2^-64)
 
-This data structure features lossless arithmetic operations within range of (x>2^-64) (~1e19)
-Retaining high precision representation of floating point within range of (2^-64 > x > 2^(-(2^64)))
+This data structure features lossless arithmetic operations within range of (x>2^-64) (~5.4e-20)
+Retaining high precision representation of floating point within range of (2^-64 > x > 2^(-(2^32)))
 
     spas_fract168_t{
 
