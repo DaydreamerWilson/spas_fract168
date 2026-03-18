@@ -1,6 +1,6 @@
-Require CXX14 or above to compile
+Require CXX14 or above to compile the headers, and CXX17 or above for the test main.cpp.
 
-Natively programmed and tested in MinGW 14.2.0 environment
+The headers are natively programmed in MinGW 14.2.0 environment
 
 **The type is strictly limited to fractions (-1.0<x<1.0)**
 
@@ -8,8 +8,7 @@ Current available native features included
 - Arithmetic operations including addition, subtraction and multiplication
 - Constructing fraction from double (x>2^-64)
 
-This data structure features lossless arithmetic operations within range of (x>2^-64) (~5.4e-20)
-Retaining high precision representation of floating point within range of (2^-64 > x > 2^(-(2^32)))
+This data structure features lossless arithmetic operations within range of (x>2^-64) (~5.4e-20) and retaining high precision representation of floating point within range of (2^-64 > x > 2^(-(2^32))) with constant memory footprint compared to double or float
 
     spas_fract168_t{
 
