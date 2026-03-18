@@ -117,7 +117,7 @@ spas_fract168_t& spas_fract168_t::operator+=(const spas_fract168_t& rhs){
         }
 
         if(this->small){
-            unsigned long index = __builtin_clzll(this->small);
+            unsigned long index = (this->small == 0) ? 64 : __builtin_clzll(this->small);
             this->small = this->small << index;
             this->offset += index;
         }
@@ -172,7 +172,7 @@ spas_fract168_t& spas_fract168_t::operator-=(const spas_fract168_t& rhs){
         }
 
         if(this->small){
-            unsigned long index = __builtin_clzll(this->small);
+            unsigned long index = (this->small == 0) ? 64 : __builtin_clzll(this->small);
             this->small = this->small << index;
             this->offset += index;
         }
@@ -240,7 +240,7 @@ spas_fract168_t& spas_fract168_t::operator*=(const spas_fract168_t& rhs){
         fraction_multiply(this->big, rhs.big, big, small);
         
         if(small){
-            unsigned long _index = __builtin_clzll(small);
+            unsigned long _index = (small == 0) ? 64 : __builtin_clzll(small);
             small = small << _index;
             off = _index;
         }
@@ -260,8 +260,9 @@ spas_fract168_t& spas_fract168_t::operator*=(const spas_fract168_t& rhs){
         if(this->big){
             r_sign = (((this->sign>>3)&0b0001)!=(rhs.sign&0b0001));
             fraction_multiply(this->big, rhs.small, r_small, ns);
-            unsigned long big_index = (big_index ==  0) ? 64 : __builtin_clzll(r_small);
-            unsigned long small_index = (small_index == 0) ? 64 : __builtin_clzll(ns);
+
+            unsigned long big_index = (r_small ==  0) ? 64 : __builtin_clzll(r_small);
+            unsigned long small_index = (ns == 0) ? 64 : __builtin_clzll(ns);
 
             if(r_small){
                 if(big_index != 0){
@@ -290,15 +291,8 @@ spas_fract168_t& spas_fract168_t::operator*=(const spas_fract168_t& rhs){
             t_sign=((this->sign&0b0001)!=((rhs.sign>>3)&0b0001));
 
             fraction_multiply(rhs.big, this->small, t_small, ns);
-            unsigned long big_index = __builtin_clzll(t_small);
-            unsigned long small_index = __builtin_clzll(ns);
-
-            if(big_index<0){
-                big_index = 64;
-            }
-            if(small_index<0){
-                small_index = 64;
-            }
+            unsigned long big_index = (t_small == 0) ? 64 : __builtin_clzll(t_small);
+            unsigned long small_index = (ns == 0) ? 64 : __builtin_clzll(ns);
 
             if(t_small){
                 if(big_index != 0){
@@ -522,7 +516,7 @@ void _fraction_multiply(uint64_t lhs, uint64_t rhs, uint64_t &big, uint64_t &sma
     }
     if(rhs && lhs){
         uint64_t t = 0x8000'0000'0000'0000;
-        unsigned long index = __builtin_clzll(rhs);
+        unsigned long index = (rhs == 0) ? 64 : __builtin_clzll(rhs);
         t = t >> index;
         for(unsigned long i = index; i<64; i++){
             if(t&rhs){
