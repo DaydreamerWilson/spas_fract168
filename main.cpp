@@ -72,7 +72,7 @@ void test_unary_minus() {
 }
 
 void test_addition() {
-    std::cout << "\n--- Testing Addition (Exception-Free) ---\n";
+    std::cout << "\n--- Testing Addition ---\n";
 
     spas_fract168_t f_0_25(0.25);
     spas_fract168_t f_0_5(0.5);
@@ -83,7 +83,7 @@ void test_addition() {
 }
 
 void test_subtraction() {
-    std::cout << "\n--- Testing Subtraction (Exception-Free) ---\n";
+    std::cout << "\n--- Testing Subtraction ---\n";
 
     spas_fract168_t f_0_75(0.75);
     spas_fract168_t f_0_25(0.25);
@@ -94,7 +94,7 @@ void test_subtraction() {
 }
 
 void test_multiplication() {
-    std::cout << "\n--- Testing Multiplication (Exception-Free) ---\n";
+    std::cout << "\n--- Testing Multiplication ---\n";
 
     spas_fract168_t f_0_5(0.5);
     spas_fract168_t f_m0_5(-0.5);
@@ -104,7 +104,7 @@ void test_multiplication() {
 }
 
 void test_shift_left() {
-    std::cout << "\n--- Testing Shift Left (Exception-Free) ---\n";
+    std::cout << "\n--- Testing Shift Left ---\n";
 
     spas_fract168_t f_0_125(0.125);
     assert_test(approx_eq((f_0_125 << 1).getDouble(), 0.25), "0.125 << 1 = 0.25");
@@ -183,7 +183,7 @@ void test_big_small_cross_interactions() {
 }
 
 int main() {
-    std::cout << "Starting spas_fract168_t Testing Suite (Safe & Exception-Free)...\n";
+    std::cout << "Starting spas_fract168_t Testing Suite...\n";
 
     test_constructors();
     test_get_double();
