@@ -2,7 +2,7 @@ Require CXX14 or above to compile
 
 Natively programmed and tested in MinGW 14.2.0 environment
 
-**The type is strictly limited to fractions (-1.0>x>1.0)**
+**The type is strictly limited to fractions (-1.0<x<1.0)**
 
 Current available native features included
 - Arithmetic operations including addition, subtraction and multiplication
