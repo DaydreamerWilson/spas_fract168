@@ -172,12 +172,12 @@ void test_shift_left() {
     // Tests below demonstrate this expected *buggy* behavior.
     // Also, shifting can easily exceed the (-1, 1) range.
 
-    spas_fract168_t s1(0.25); // 0.01 bin -> big=0x4000...
-    spas_fract168_t s1_shifted = s1 << 5; // rhs=5 ignored, should shift by 1
+    spas_fract168_t s1(0.125); // 0.01 bin -> big=0x4000...
+    spas_fract168_t s1_shifted = s1 << 2; // rhs=5 ignored, should shift by 1
 
     // Expected result of 0.25 << 1 is 0.5
     spas_fract168_t expected_s1_shift1(0.5); // big=0x8000...
-    run_test("Shift Left 0.25 (Ignores rhs=5, Actual Shift by 1)", s1_shifted, expected_s1_shift1);
+    run_test("Shift Left 0.125 by 2 bits", s1_shifted, expected_s1_shift1);
 
     // Test shift that hits boundary (0.5 << 1 = 1.0, which is out of range)
     spas_fract168_t s2(0.5); // big=0x8000...
@@ -188,8 +188,8 @@ void test_shift_left() {
     // offset = 0
     // big |= (small >> 63) -> big |= (0 >> 63) = 0
     // Result: big=0, offset=0, small=0 (assuming small was 0)
-    spas_fract168_t expected_s2_shift1_buggy(0.0); // BUGGY BEHAVIOR PREDICTION
-    run_test("Shift Left 0.5 (Boundary 1.0 - Expect Buggy Result 0.0)", s2_shifted, expected_s2_shift1_buggy);
+    spas_fract168_t expected_s2_shift1(1.0); // OUT OF BOUND BEHAVIOR PREDICTION
+    run_test("Shift Left 0.5 (Boundary 1.0 - Expect Buggy Result 0.0 since calculation went out of bound)", s2_shifted, expected_s2_shift1);
 
     // Test shift for negative number
     spas_fract168_t s3(-0.25); // sign=0b1000, big=0x4000...
@@ -204,16 +204,16 @@ void test_shift_left() {
     spas_fract168_t s4_shifted = s4 << 1;
 
     // Expected result (buggy prediction): sign=0b1000, big=0? -> -0.0
-    spas_fract168_t expected_s4_shift1_buggy(0.0); // BUGGY BEHAVIOR PREDICTION (sign bit might remain?)
+    spas_fract168_t expected_s4_shift1_buggy(-1.0); // OUT OF BOUND BEHAVIOR PREDICTION (sign bit might remain?)
     // Let's refine the expected buggy result based on sign handling
     // Sign likely doesn't change, big becomes 0.
     spas_fract168_t expected_s4_shift1_buggy_negzero(0b1000, 0, 0, 0);
-    run_test("Shift Left -0.5 (Boundary -1.0 - Expect Buggy Result -0.0)", s4_shifted, expected_s4_shift1_buggy_negzero);
+    run_test("Shift Left -0.5 (Boundary -1.0 - Expect Buggy Result -0.0 since calculation went out of bound)", s4_shifted, expected_s4_shift1_buggy_negzero);
 
     // Test shift by 0 (should also shift by 1 due to bug)
      spas_fract168_t s5 = s1; // 0.25
      spas_fract168_t s5_shifted = s5 << 0; // rhs=0 ignored
-     run_test("Shift Left 0.25 (Ignores rhs=0, Actual Shift by 1)", s5_shifted, expected_s1_shift1);
+     run_test("Shift Left 0.25", s5_shifted, s5);
 }
 
 void test_addition() {

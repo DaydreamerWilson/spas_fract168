@@ -94,7 +94,7 @@ spas_fract168_t& spas_fract168_t::operator=(const spas_fract168_t& t){
 
 spas_fract168_t& spas_fract168_t::operator+=(const spas_fract168_t& rhs){
     // printf("Addition! Signs: %d %d \n", this->sign, rhs.sign);
-    if((this->sign&0b1000) == (rhs.sign&0b1000)){ // (a+b) / (-a-b) = -(a+b)
+    if((this->sign&0b1000) == (rhs.sign&0b1000)){ // (a+b) AND (-a-b) = -(a+b)
         unsigned char lb_sign = 0, ls_sign = 0, rb_sign = 0, rs_sign = 0;
         if(this->sign&0b1000){lb_sign = 1;}
         if(this->sign&0b0001){ls_sign = 1;}
@@ -151,7 +151,7 @@ spas_fract168_t& spas_fract168_t::operator+=(const spas_fract168_t& rhs){
 
 spas_fract168_t& spas_fract168_t::operator-=(const spas_fract168_t& rhs){
     // printf("Subtration! Signs: %d %d \n", this->sign, rhs.sign);
-    if((this->sign&0b1000) == (rhs.sign&0b1000)){ // (a-b) / ((-a)-(-b)) = -(a-b)
+    if((this->sign&0b1000) == (rhs.sign&0b1000)){ // (a-b) AND ((-a)-(-b)) = -(a-b)
         unsigned char lb_sign = 0, ls_sign = 0, rb_sign = 0, rs_sign = 0;
         if(this->sign&0b1000){lb_sign = 1;}
         if(this->sign&0b0001){ls_sign = 1;}
@@ -399,13 +399,30 @@ spas_fract168_t operator-(const spas_fract168_t& rhs){
 }
 
 spas_fract168_t operator<<(spas_fract168_t lhs, const uint32_t rhs){
-    lhs.big = lhs.big << 1;
-    if(lhs.offset>0){
-        lhs.offset-=1;
-        lhs.small = lhs.small << 1;
+    if(rhs >= (uint64_t)lhs.offset+128){return spas_fract168_t(0.0);}
+    if(rhs<64){
+        lhs.big = lhs.big << rhs;
     }
     else{
-        lhs.big = lhs.big | (lhs.small >> 63);
+        lhs.big = 0;
+    }
+    if(lhs.offset>=rhs){
+        lhs.offset-=rhs;
+    }
+    else{
+        if(64+(uint64_t)lhs.offset >= rhs){
+            lhs.big = lhs.big | (lhs.small >> (64+lhs.offset-rhs));
+        }
+        else{
+            lhs.big = lhs.big | (lhs.small << -(64+lhs.offset-rhs));
+        }
+        if(rhs-lhs.offset>63){
+            lhs.small = 0;
+        }
+        else{
+            lhs.small = lhs.small << (rhs-lhs.offset);
+        }
+        lhs.offset = 0;
     }
     return lhs;
 }
