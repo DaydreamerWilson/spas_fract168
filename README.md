@@ -25,7 +25,7 @@ Retaining high precision representation of floating point within range of (2^-64
 
 Allow high precision arithmetic operations with number smaller than 2^-64 while maintaining constant memory footprint.
 
-This project is tested rigorously while compiling with CMake3.4. Natively supported by visual studio CMake.
+This project is tested rigorously while compiling with CMake3.4.
 
 This class may have compatibility issue since it used the following non-standard functions/data types
 - __uint128_t
