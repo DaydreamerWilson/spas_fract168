@@ -24,7 +24,7 @@ This data structure features lossless arithmetic operations within range of (x>2
 
 Allow high precision arithmetic operations with number smaller than 2^-64 while maintaining constant memory footprint.
 
-This project is tested rigorously while compiling with CMake3.4.
+This project is tested while compiling with CMake3.4.
 
 This class may have compatibility issue since it used the following non-standard functions/data types
 - __uint128_t
