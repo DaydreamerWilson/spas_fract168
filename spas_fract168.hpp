@@ -2,6 +2,7 @@
 #define spas_fract168
 
 #include <cstring>
+#include <cmath>
 #include <iostream>
 #include <stdint.h>
 #include <stdlib.h>

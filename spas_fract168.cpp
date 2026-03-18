@@ -46,6 +46,7 @@ spas_fract168_t::spas_fract168_t(){
     this->offset = 0;
 }
 
+/*
 spas_fract168_t::spas_fract168_t(double t){
     uint64_t temp = 0x8000000000000000;
     this->big = 0;
@@ -65,6 +66,54 @@ spas_fract168_t::spas_fract168_t(double t){
         }
         temp = temp >> 1;
         t = t*2.0;
+    }
+}
+*/
+
+spas_fract168_t::spas_fract168_t(double t) {
+    this->big = 0;
+    this->small = 0;
+    this->offset = 0;
+    this->sign = 0;
+
+    if (t == 0.0) return;
+
+    if(t<0){
+        this->sign = 0b1000;
+        t *= -1;
+    }
+
+    if(t >= 1.0 || t <= -1.0){
+        throw std::invalid_argument("spas_fract168_t constructed with out-of-bound value!");
+    }
+
+    double mantissa;
+    int exponent;
+    mantissa = std::frexp(t, &exponent);
+
+    uint64_t temp;
+    std::memcpy(&temp, &mantissa, sizeof(double));
+
+    temp = (temp << 11) | 0x8000000000000000ULL;
+    int shift = -exponent;
+
+    if(shift < 64){
+        this->big = temp >> shift;
+        this->small = (shift == 0) ? 0 : (temp << (64 - shift));
+
+        if(this->small != 0){
+            unsigned long index = __builtin_clzll(this->small);
+            this->small = this->small << index;
+            this->offset = index;
+        }
+        else{
+            this->offset = 0;
+        }
+    }
+    else{
+        this->big = 0;
+        this->small = temp;
+        this->offset = shift - 64;
     }
 }
 
@@ -104,7 +153,9 @@ spas_fract168_t& spas_fract168_t::operator+=(const spas_fract168_t& rhs){
         unsigned char big_sign = 0, small_sign = 0;
         uint32_t discard;
 
-        full_fraction_addition(big_sign, this->big, discard, lb_sign, this->big, 0, rb_sign, rhs.big, 0);
+        if(full_fraction_addition(big_sign, this->big, discard, lb_sign, this->big, 0, rb_sign, rhs.big, 0)){
+            throw std::invalid_argument("spas_fract168_t overflowed!");
+        }
         uint8_t carry = full_fraction_addition(small_sign, this->small, this->offset, ls_sign, this->small, this->offset, rs_sign, rhs.small, rhs.offset);
 
         if(carry && this->offset == 0){
@@ -159,7 +210,9 @@ spas_fract168_t& spas_fract168_t::operator-=(const spas_fract168_t& rhs){
         unsigned char big_sign = 0, small_sign = 0;
         uint32_t discard;
 
-        full_fraction_subtraction(big_sign, this->big, discard, lb_sign, this->big, 0, rb_sign, rhs.big, 0);
+        if(full_fraction_subtraction(big_sign, this->big, discard, lb_sign, this->big, 0, rb_sign, rhs.big, 0)){
+            throw std::invalid_argument("spas_fract168_t underflowed!");
+        }
         uint8_t carry = full_fraction_subtraction(small_sign, this->small, this->offset, ls_sign, this->small, this->offset, rs_sign, rhs.small, rhs.offset);
 
         if(carry && this->offset == 0){
@@ -416,7 +469,7 @@ uint32_t reverse_32(uint32_t t){
 }
 
 void fraction_multiply(uint64_t lhs, uint64_t rhs, uint64_t &big, uint64_t &small){
-    __int128_t temp = (__int128_t)lhs*(__int128_t)rhs;
+    __uint128_t temp = (__uint128_t)lhs*(__uint128_t)rhs;
     big = (uint64_t)(temp>>64);
     small = (uint64_t)temp;
 }
