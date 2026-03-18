@@ -367,6 +367,15 @@ spas_fract168_t& spas_fract168_t::operator*=(const spas_fract168_t& rhs){
     return *this;
 }
 
+spas_fract168_t& spas_fract168_t::operator*=(const double rhs){
+    if(rhs*rhs<1){
+        *this *= (spas_fract168_t)rhs;
+        return *this;
+    }
+    
+    return *this;
+}
+
 // Friend Operators
 spas_fract168_t operator+(spas_fract168_t lhs, const spas_fract168_t& rhs)
 {   

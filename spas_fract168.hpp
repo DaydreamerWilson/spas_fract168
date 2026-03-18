@@ -7,10 +7,6 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
-#include <intrin.h>
-
-#pragma intrinsic(_umul128)
-
 // High precision fraction series
 class spas_fract168_t{
     public:
@@ -46,6 +42,8 @@ class spas_fract168_t{
         spas_fract168_t& operator+=(const spas_fract168_t& rhs);
         spas_fract168_t& operator-=(const spas_fract168_t& rhs);
         spas_fract168_t& operator*=(const spas_fract168_t& rhs);
+        // Operator for multiplication with a double
+        spas_fract168_t& operator*=(const double rhs);
 };
 
 spas_fract168_t operator+(spas_fract168_t lhs, const spas_fract168_t& rhs);
