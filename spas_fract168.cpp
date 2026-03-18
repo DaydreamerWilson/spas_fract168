@@ -214,10 +214,10 @@ spas_fract168_t& spas_fract168_t::operator*=(const spas_fract168_t& rhs){
     unsigned long sb_index = __builtin_clzll(sb);
     unsigned long ss_index = __builtin_clzll(ss);
 
-    if(sb_index<0){
+    if(sb==0){
         sb_index = 64;
     }
-    if(ss_index<0){
+    if(ss==0){
         ss_index = 64;
     }
 
