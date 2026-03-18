@@ -107,6 +107,15 @@ spas_fract168_t& spas_fract168_t::operator+=(const spas_fract168_t& rhs){
         full_fraction_addition(big_sign, this->big, discard, lb_sign, this->big, 0, rb_sign, rhs.big, 0);
         uint8_t carry = full_fraction_addition(small_sign, this->small, this->offset, ls_sign, this->small, this->offset, rs_sign, rhs.small, rhs.offset);
 
+        if(carry && this->offset == 0){
+            if(small_sign!=big_sign){
+                this->big-=1;
+            }
+            else{
+                this->big+=1;
+            }
+        }
+
         if(this->small){
             unsigned long index = __builtin_clzll(this->small);
             this->small = this->small << index;
@@ -118,17 +127,6 @@ spas_fract168_t& spas_fract168_t::operator+=(const spas_fract168_t& rhs){
         }
 
         this->sign = big_sign<<3|small_sign;
-        
-        if(carry){
-            if(carry==2){
-                if(big_sign){this->big+=1;}
-                else{this->big-=1;}
-            }
-            else{
-                if(big_sign){this->big-=1;}
-                else{this->big+=1;}
-            }
-        }
 
         // printf("Returning subtraction \n");
         return *this;
@@ -164,6 +162,15 @@ spas_fract168_t& spas_fract168_t::operator-=(const spas_fract168_t& rhs){
         full_fraction_subtraction(big_sign, this->big, discard, lb_sign, this->big, 0, rb_sign, rhs.big, 0);
         uint8_t carry = full_fraction_subtraction(small_sign, this->small, this->offset, ls_sign, this->small, this->offset, rs_sign, rhs.small, rhs.offset);
 
+        if(carry && this->offset == 0){
+            if(small_sign!=big_sign){
+                this->big-=1;
+            }
+            else{
+                this->big+=1;
+            }
+        }
+
         if(this->small){
             unsigned long index = __builtin_clzll(this->small);
             this->small = this->small << index;
@@ -175,17 +182,6 @@ spas_fract168_t& spas_fract168_t::operator-=(const spas_fract168_t& rhs){
         }
 
         this->sign = big_sign<<3|small_sign;
-
-        if(carry){
-            if(carry==2){
-                if(big_sign){this->big+=1;}
-                else{this->big-=1;}
-            }
-            else{
-                if(big_sign){this->big-=1;}
-                else{this->big+=1;}
-            }
-        }
 
         // printf("Returning subtraction \n");
         return *this;
