@@ -1,4 +1,4 @@
-Require CXX14 or above to compile the headers, and CXX17 or above for the test main.cpp.
+Require CXX14 or above to compile.
 
 The headers are natively programmed in MinGW 14.2.0 environment
 
